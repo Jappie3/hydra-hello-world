@@ -11,16 +11,15 @@
   }: let
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
   in {
-    packages.x86_64-linux.default = with pkgs;
-      rustPlatform.buildRustPackage {
-        name = "package-name";
-        pname = "hello-world";
-        src = ./.;
-        cargoBuildFlags = "-p hello-world";
-        cargoLock = {
-          lockFile = ./Cargo.lock;
-        };
+    packages.x86_64-linux.default = pkgs.rustPlatform.buildRustPackage {
+      name = "package-name";
+      pname = "hello-world";
+      src = ./src;
+      cargoBuildFlags = "-p hello-world";
+      cargoLock = {
+        lockFile = ./Cargo.lock;
       };
+    };
 
     hydraJobs."master" = {
       job = self.packages.x86_64-linux.default;
