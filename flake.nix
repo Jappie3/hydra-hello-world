@@ -1,18 +1,30 @@
 {
   description = "Rust Hello World program for testing Hydra";
 
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs";
+  };
+
   outputs = {
     self,
     nixpkgs,
   }: let
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
   in {
-    # packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-    # packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
+    packages.x86_64-linux.default = with pkgs;
+      rustPlatform.buildRustPackage {
+        name = "package-name";
+        pname = "hello-world";
+        src = ./.;
+        cargoBuildFlags = "-p hello-world";
+        cargoLock = {
+          lockFile = ./Cargo.lock;
+        };
+      };
 
-    defaultPackage.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.tree;
-
-    hydraJobs."master" = self.defaultPackage;
+    hydraJobs."master" = {
+      job = self.packages.x86_64-linux.default;
+    };
     hydraJobs."test" = pkgs.runCommand "mycommand" {} ''
       echo hello
     '';
