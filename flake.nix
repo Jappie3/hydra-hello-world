@@ -14,8 +14,8 @@
     packages.x86_64-linux.default = pkgs.rustPlatform.buildRustPackage {
       name = "package-name";
       pname = "hello-world";
-      src = ./src;
-      cargoBuildFlags = "-p hello-world";
+      src = ./.;
+      #cargoBuildFlags = "-p hello-world";
       cargoLock = {
         lockFile = ./Cargo.lock;
       };
